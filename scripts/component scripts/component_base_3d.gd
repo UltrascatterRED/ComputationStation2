@@ -1,5 +1,5 @@
-extends Node2D
-class_name ComponentBase
+extends Node3D
+class_name ComponentBase3D
 # Every component must have these defined
 var component_id = ""
 var component_type = "" # e.g., "cpu", "ram", "vrm"
@@ -11,16 +11,24 @@ var connected_outputs = {}
 
 var state = "idle" # idle, active, powered, error
 
+var previous_pos = Vector3()
+
 func _ready():
 	component_id = generate_unique_id()
 	add_to_group("components")
+	set_notify_transform(true)
 
 func generate_unique_id():
 	return str(component_type) + "_" + str(randi())
 
+# connects to_component to this component as an output
+# self ----[outputs to]---> to_component
+# DEV NOTE: Currently malfunctions in certain scenarios (i.e.
+#  CPU and VRM are both present in scene, only one of two
+#  requisite wires is drawn. Find cause.
 func connect_wire(to_component: Node, wire_type: String):
 	if wire_type in allowed_outputs and wire_type in to_component.required_inputs:
-		var wire = preload("res://scenes/components2D/Wire.tscn").instantiate()
+		var wire = preload("res://scenes/components3D/Wire3D.tscn").instantiate()
 		wire.source = self
 		wire.target = to_component
 		wire.wire_type = wire_type
@@ -31,6 +39,29 @@ func connect_wire(to_component: Node, wire_type: String):
 		to_component.connected_inputs[component_id] = wire
 	else:
 		print("Incompatible connection")
+
+# _notification() and _process() are trying to solve the same issue of
+# detecting when this component is moved in the scene. Neither work yet,
+# but only use one.
+func _notification(what):
+	if what == NOTIFICATION_TRANSFORM_CHANGED:
+		for input in connected_inputs:
+			if typeof(input) == typeof(Wire3D):
+				input.update_position()
+		for output in connected_outputs:
+			if typeof(output) == typeof(Wire3D):
+				output.update_position()
+
+func _process(_delta):
+	# refresh wire positions if this component was moved
+	if global_position != previous_pos:
+		for input in connected_inputs:
+			if typeof(input) == typeof(Wire3D):
+				input.update_position()
+		for output in connected_outputs:
+			if typeof(output) == typeof(Wire3D):
+				output.update_position()
+	previous_pos = global_position
 
 func evaluate_state():
 	# get types of all wires present in connected_inputs
@@ -49,10 +80,11 @@ func evaluate_state():
 	update_visual_state()
 
 func update_visual_state():
+	# replace print() with color modulation of mesh material
 	match state:
 		"active":
-			$Sprite2D.modulate = Color.GREEN
+			print("green!")
 		"idle":
-			$Sprite2D.modulate = Color.GRAY
+			print("gray!")
 		"error":
-			$Sprite2D.modulate = Color.RED
+			print("red!")
