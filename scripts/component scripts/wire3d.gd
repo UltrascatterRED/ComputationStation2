@@ -6,8 +6,8 @@ var target: Node = null
 var wire_type: String = "data" # refactor to enum or similar structure
 
 # get mesh and material data
-@onready var wire_mesh: CSGPolygon3D = get_node("/root/Wire3d/Path3D/WireMesh")
-@onready var wire_path: Path3D = get_node("/root/Wire3d/Path3D")
+@onready var wire_mesh: CSGPolygon3D = get_node("./Path3D/WireMesh")
+@onready var wire_path: Path3D = get_node("./Path3D")
 
 func _ready():
 	# set wire color based on type

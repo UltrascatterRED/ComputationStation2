@@ -26,13 +26,21 @@ func generate_unique_id():
 # DEV NOTE: Currently malfunctions in certain scenarios (i.e.
 #  CPU and VRM are both present in scene, only one of two
 #  requisite wires is drawn. Find cause.
+#  Update: not name stomping bc all wires are instantiated. Seems
+#  to be both wires possessing identical properties (same source,
+#  dest, color, etc)
 func connect_wire(to_component: Node, wire_type: String):
 	if wire_type in allowed_outputs and wire_type in to_component.required_inputs:
+		var tree = get_tree()
 		var wire = preload("res://scenes/components3D/Wire3D.tscn").instantiate()
 		wire.source = self
 		wire.target = to_component
 		wire.wire_type = wire_type
-		get_tree().root.add_child(wire)
+		wire.add_to_group("wires")
+		# rename wire to something unique and organized
+		wire.name = "Wire3d_" + str(tree.get_node_count_in_group("wires"))
+		
+		tree.root.get_child(0).add_child(wire)
 		wire.update_position()
 
 		connected_outputs[to_component.component_id] = wire

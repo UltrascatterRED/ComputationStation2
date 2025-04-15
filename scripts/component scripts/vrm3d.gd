@@ -6,7 +6,7 @@ func _ready():
 	allowed_outputs = ["power"]
 	await get_tree().create_timer(0.2).timeout  # Wait a frame or two
 
-	var cpu = get_node("/root/CsMain3d/CPU")
+	var cpu = get_node("../CPU")
 	if cpu:
 		connect_wire(cpu, "power")
 		print("CPU connected!")
