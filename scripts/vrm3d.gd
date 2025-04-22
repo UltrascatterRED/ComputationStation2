@@ -9,7 +9,7 @@ func _ready():
 	var cpu = get_node("../CPU")
 	if cpu:
 		connect_wire(cpu, "power")
-		print("CPU connected!")
+		print("VRM connected to CPU")
 
 func generate_unique_id():
 	return str(component_type) + "_" + str(randi())

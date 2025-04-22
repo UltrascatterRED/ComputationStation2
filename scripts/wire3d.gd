@@ -22,3 +22,11 @@ func update_position():
 		wire_path.curve.clear_points() # prevent residual points from old position(s)
 		wire_path.curve.add_point(source.global_position)
 		wire_path.curve.add_point(target.global_position)
+		
+		# debug
+		var curve = wire_path.curve
+		print("Number of curve points: " + str(wire_path.curve.point_count))
+		var num_points = curve.point_count
+		for i in num_points:
+			print(str(curve.get_point_position(i).x) + ", " + str(curve.get_point_position(i).y) + ", " + str(curve.get_point_position(i).z))
+		print("-----------------------------------")
