@@ -10,7 +10,7 @@ func _ready():
 	var ram = get_node("../RAM")
 	if ram:
 		connect_wire(ram, "data")
-		print("CPU connected to RAM")
+		print("RAM connected!")
 
 func generate_unique_id():
 	return str(component_type) + "_" + str(randi())

@@ -1,6 +1,0 @@
-* sub-node "sockets" that wires attach to (rather than the componenets themselves)
-* ability to place wires
-  > click source component
-  > wire head follows cursor
-  > click dest componenet, wire places
-  > keybind to back out of wire placement (i.e. ESC key)
